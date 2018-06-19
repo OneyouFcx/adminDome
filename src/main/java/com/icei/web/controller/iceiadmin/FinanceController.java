@@ -3,6 +3,7 @@ package com.icei.web.controller.iceiadmin;
 import com.alibaba.fastjson.JSONArray;
 import com.icei.domain.Result;
 import com.icei.service.adminService.FinanceService;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 public class FinanceController {
 	@Autowired
 	private FinanceService financeService;
-
+	@RequiresRoles("admin")
 	@GetMapping("/OrderFinance.html")
 	public String toOrderFinancePage() {
-		return "iceiAdmin/finance/OrderFinance.html";
+		return "/iceiAdmin/finance/OrderFinance.html";
 	}
+
 	@ResponseBody
 	@PostMapping("/getOrderFinanceDetail")
 	public String getOrderFinanceInfo(Integer brandId, String startDate, String endDate){

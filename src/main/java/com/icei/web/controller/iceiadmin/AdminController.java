@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
 	/**
 	 * @author:LordMasterKing
 	 * @date:2018年4月19日
@@ -22,7 +21,6 @@ public class AdminController {
 	public String index() {
 		return "/iceiAdmin/index";
 	}
-
 	/**
 	 * 控制台映射访问
 	 * 
@@ -32,5 +30,4 @@ public class AdminController {
 	public String home() {
 		return "/iceiAdmin/home/console";
 	}
-	
 }

@@ -1,8 +1,9 @@
 package com.icei.shiro;
 
 
-import com.icei.domain.UserCode;
-import com.icei.service.adminService.UserCodeService;
+import com.icei.domain.Admin;
+import com.icei.domain.PowerRole;
+import com.icei.service.adminService.AdminService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,19 +19,17 @@ import javax.annotation.Resource;
 
 public class MyShiroRealm extends AuthorizingRealm {
     @Resource
-    private UserCodeService uerCodeService;
+    private AdminService adminService;
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     	 SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-     /*   System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
+        System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
        
-        UserInfo userInfo  = (UserInfo)principals.getPrimaryPrincipal();
-        for(SysRole role:userInfo.getRoleList()){
-            authorizationInfo.addRole(role.getRole());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
-            }
-        }*/
+        Admin userInfo  = (Admin)principals.getPrimaryPrincipal();
+        /*将角色对应的表示添加Shiro  进行角色限制*/
+            for(PowerRole role:userInfo.getRole()){
+            authorizationInfo.addRole(role.getRoleTag());
+        }
         return authorizationInfo;
     }
 
@@ -44,18 +43,17 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println(token.getCredentials());
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        UserCode userInfo = uerCodeService.getAllByCode(username);
+        Admin userInfo = adminService.selectByName(username);
         System.out.println("----->>userInfo="+userInfo);
         if(userInfo == null){
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 userInfo, //用户名
-                userInfo.getPassword(), //密码
+                userInfo.getAdminPwd(), //密码
                 ByteSource.Util.bytes(userInfo.getCredentialsSalt()),//salt=username+salt
-                getName()  //realm name
+                getName() //realm name
         );
         return authenticationInfo;
     }
-
 }

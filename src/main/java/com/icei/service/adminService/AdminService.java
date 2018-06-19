@@ -37,6 +37,15 @@ public class AdminService {
 		List<Admin>list=adminMapper.getTargetResult((page-1)*limit, limit, keyword, searchType);
 		return ResultUtil.success(list, count);
 	}
+
+	/**
+	 * 根据用户名查询用户信息
+	 * @param adminCode
+	 * @return
+	 */
+	public Admin selectByName(String adminCode){
+		return adminMapper.selectByName(adminCode);
+	}
 	/**
 	 * 改变管理员角色
 	 * @author:LordMasterKing

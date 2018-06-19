@@ -25,30 +25,24 @@ public class ShiroConfig {
 		// 配置不会被拦截的链接 顺序判断
 		filterChainDefinitionMap.put("/static/*", "anon");
 		//配置退出 过滤器,其中的具体的退出代码sShiro已经替我们实现了
-		filterChainDefinitionMap.put("/logout", "logout");
-
-		filterChainDefinitionMap.put("/icei/myorder.html", "authc");
-		filterChainDefinitionMap.put("/icei/payorder.html", "authc");
+		filterChainDefinitionMap.put("/admin/login/logout", "logout");
+		filterChainDefinitionMap.put("/admin/login/logout", "anon");
+		filterChainDefinitionMap.put("/admin/finance/*", "authc,roles[admin]");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		//<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-		filterChainDefinitionMap.put("/brand/*", "authc");
 		//不定义登陆页面为authc的情况非常容易出现验证登录失效.
-		filterChainDefinitionMap.put("/icei/logins", "authc");
-
-		filterChainDefinitionMap.put("/brand/*", "anon");
+		filterChainDefinitionMap.put("/admin/*", "authc");
 		//需要有这个角色
 		//filterChainDefinitionMap.put("icei/**", "authc,roles[test]");
 		// 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-		shiroFilterFactoryBean.setLoginUrl("/icei/logins");
+		shiroFilterFactoryBean.setLoginUrl("/admin/login/login.html");
 		// 登录成功后要跳转的链接
 		shiroFilterFactoryBean.setSuccessUrl("/icei/");
-
 		//未授权界面;
 		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
 	}
-
 	/**
 	 * 凭证匹配器
 	 * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
@@ -69,15 +63,12 @@ public class ShiroConfig {
 		myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
 		return myShiroRealm;
 	}
-
-
 	@Bean
 	public SecurityManager securityManager(){
 		DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
 		securityManager.setRealm(myShiroRealm());
 		return securityManager;
 	}
-
 	/**
 	 *  开启shiro aop注解支持.
 	 *  使用代理方式;所以需要开启代码支持;
